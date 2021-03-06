@@ -27,10 +27,6 @@ public class Zeep extends CordovaPlugin
             {
                 zip(args.getString(0), args.getString(1));
             }
-            else
-            {
-                unzip(args.getString(0), args.getString(1));
-            }
             
             callbackContext.success();
             return true;
@@ -86,55 +82,6 @@ public class Zeep extends CordovaPlugin
             if (outStream != null)
             {
                 outStream.close();
-            }
-        }
-    }
-    
-    private void unzip(final String from, final String to) throws Exception
-    {
-        ZipInputStream inStream = null;
-        
-        try
-        {
-            final File fromFile = getFile(from);
-            final File toFile = getFile(to);
-            final byte[] buffer = new byte[BUFFER_SIZE];
-            
-            inStream = new ZipInputStream(new BufferedInputStream(new FileInputStream(fromFile)));
-            
-            ZipEntry entry; while((entry = inStream.getNextEntry()) != null)
-            {
-                BufferedOutputStream outStream = null;
-                
-                try
-                {
-                    File file = new File(toFile, entry.getName());
-                    file.getParentFile().mkdirs();
-                    if (!entry.isDirectory()) 
-                     { 
-                        outStream = new BufferedOutputStream(new FileOutputStream(file), BUFFER_SIZE); 
-                        int count; 
-                         
-                        while ((count = inStream.read(buffer, 0, BUFFER_SIZE)) != -1) 
-                        { 
-                              outStream.write(buffer, 0, count); 
-                        } 
-                     } 
-                }
-                finally
-                {
-                    if (outStream != null)
-                    {
-                        outStream.close();
-                    }
-                }
-            }
-        }
-        finally
-        {
-            if (inStream != null)
-            {
-                inStream.close();
             }
         }
     }

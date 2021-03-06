@@ -24,16 +24,6 @@ function validateConfig(config, mode, callback) {
     		callback('failed while locating : ' + config.from + " (" + JSON.stringify(error) + ")");
     	});
     }
-    if (mode === 'unzip') {
-    	window.resolveLocalFileSystemURL(config.from, function (result) {
-    		if (!result.isFile) {
-    			return callback('config.from must be a file url');
-    		}
-    		callback();
-    	}, function (error) {
-    		callback('failed while locating : ' + config.from + " (" + JSON.stringify(error) + ")");
-    	});
-    }
 }
 
 exports.zip = function (config, successCallback, errorCallback) {
@@ -51,20 +41,6 @@ exports.zip = function (config, successCallback, errorCallback) {
 	});
 };
 
-exports.unzip = function(config, successCallback, errorCallback) {
-	setTimeout(function () {
-		try {
-			validateConfig(config, 'unzip', function (error) {
-				if (error) {
-					return errorCallback(error);
-				}
-				exec(successCallback, errorCallback, 'Zeep', 'unzip', [config.from, config.to]);
-			});
-		} catch (error) {
-			errorCallback(error.message);
-		}
-	});
-};
 
 exports.series = function(tasks, completeCallback) {
 	if (typeof (completeCallback) !== 'function') return console.log("series: 'completeCallback' must be a function : " + typeof (completeCallback));
@@ -93,11 +69,6 @@ if (window.angular) {
         this.zip = function (config) {
             return $q(function(resolve, reject) {
                 window.Zeep.zip(config, resolve, reject);
-            });
-        };
-        this.unzip = function (config) {
-            return $q(function(resolve, reject) {
-                window.Zeep.unzip(config, resolve, reject);
             });
         };
     }]);
